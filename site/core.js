@@ -3,9 +3,10 @@ export const STORAGE_KEY='rootwise.state.v1',DAY=86400000;
 export const localDay=(time=Date.now())=>{const d=new Date(time);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;};
 export function initialState(){return {version:1,schema:3,book:'cet4-all',goal:20,progress:{},favorites:[],events:[],attempts:[],custom:[],session:null,parked:{},checkins:[],focus:{},collectionChanges:{},settingsUpdated:0,settings:{sound:false,accent:'en-US',voiceId:'',voiceSource:'builtin',maintainAll:true,groupSize:20,spelling:true,reverse:false,theme:'mist'}};}
 const wordArray=a=>Array.isArray(a)?[...new Set(a.filter(x=>typeof x==='string'&&/^[a-z][a-z '-]{0,79}$/.test(x)))].slice(0,20000):[];
+export function normalizeGoal(value,fallback=20){const n=Number(value);return Number.isSafeInteger(n)&&n>0?n:fallback;}
 export function normalizeState(raw){
  if(!raw||raw.version!==1||!raw.progress||typeof raw.progress!=='object'||Array.isArray(raw.progress))throw Error('不是有效的词序备份文件');
- const state=initialState();state.book=typeof raw.book==='string'?raw.book:state.book;state.goal=Math.max(5,Math.min(100,Math.round(Number(raw.goal)||15)));
+ const state=initialState();state.book=typeof raw.book==='string'?raw.book:state.book;state.goal=normalizeGoal(raw.goal);
  for(const [w,p] of Object.entries(raw.progress)){
   if(!/^[a-z][a-z '-]{0,79}$/.test(w)||!p||!Number.isFinite(p.due)||p.due<0||!Number.isFinite(p.reps))continue;
   state.progress[w]={due:p.due,reps:Math.max(0,Math.min(100000,p.reps)),lapses:Math.max(0,Number(p.lapses)||0),interval:Math.max(0,Math.min(3650,Number(p.interval)||0)),last:Number(p.last)||0,ease:Math.max(1.3,Math.min(3,Number(p.ease)||2.5)),known:!!p.known};
@@ -18,7 +19,7 @@ export function normalizeState(raw){
  state.settings={sound:!!raw.settings?.sound,accent:raw.settings?.accent==='en-GB'?'en-GB':'en-US',voiceId:typeof raw.settings?.voiceId==='string'?raw.settings.voiceId.slice(0,400):'',voiceSource:raw.settings?.voiceSource==='system'?'system':'builtin',maintainAll:raw.schema>=3?raw.settings?.maintainAll!==false:true,groupSize:[5,10,15,20,30,50].includes(raw.settings?.groupSize)?raw.settings.groupSize:20,spelling:raw.settings?.spelling!==false,reverse:!!raw.settings?.reverse,theme:['mist','rose','cloud'].includes(raw.settings?.theme)?raw.settings.theme:'mist'};
  state.settingsUpdated=Math.max(0,Number(raw.settingsUpdated)||0);state.collectionChanges=raw.collectionChanges&&typeof raw.collectionChanges==='object'&&!Array.isArray(raw.collectionChanges)?raw.collectionChanges:{};state.focus=raw.focus&&typeof raw.focus==='object'&&!Array.isArray(raw.focus)?raw.focus:{};
  const s=raw.session;
- if(s?.engine===2&&Array.isArray(s.words)&&s.words.length<=300&&s.items&&Array.isArray(s.queue)&&s.queue.length<=300){
+ if(s?.engine===2&&Array.isArray(s.words)&&s.items&&Array.isArray(s.queue)){
   const ws=wordArray(s.words),items={};
   for(const w of ws){const item=s.items[w];if(!item||!Number.isInteger(item.step)||item.step<0||item.step>4)throw Error('学习会话损坏');items[w]={step:item.step,new:!!item.new,failures:Math.min(10000,Math.max(0,Number(item.failures)||0)),hinted:!!item.hinted,done:!!item.done,known:!!item.known};}
   if(ws.length){const groupSize=[5,10,15,20,30,50].includes(s.groupSize)?s.groupSize:10;

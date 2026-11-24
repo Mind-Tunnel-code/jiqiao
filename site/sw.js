@@ -1,4 +1,4 @@
-const CACHE='rootwise-jiqiao-v1-20261124';
+const CACHE='rootwise-jiqiao-v1.0.1-goal-20261124';
 const AUDIO_CACHE='rootwise-audio-ljspeech-v1';
 const ASSETS=['./','./index.html','./styles.css','./brand.css','./runtime-config.js','./app.js','./core.js','./sync-state.js','./vendor/fsrs.js','./vendor/FSRS-LICENSE.txt','./vendor/SRS-KIT-LICENSE.txt','./speech.js','./recorded-speech.js','./icon.svg','./icon-192.png','./icon-512.png','./manifest.webmanifest','./data/lexicon.json','./data/audio.json','./data/content-review.txt','./data/voice-notice.txt','./data/third-party-notices.txt','./data/privacy.txt','./data/ANDROIDX-LICENSE.txt','./data/ECDICT-LICENSE.txt'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting()));});
