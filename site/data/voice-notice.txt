@@ -1,0 +1,28 @@
+记巧内置英语发音
+
+音色：LJ Speech，美式英语，女声。
+这些 MP3 为本应用预先合成的语音，不是真人词典录音。
+生成工具：Piper (piper-tts 1.8.0 + ONNX Runtime (单线程))，仅在构建时运行，未向访问者分发工具或模型。
+模型：https://huggingface.co/rhasspy/piper-voices/tree/main/en/en_US/ljspeech/medium
+模型卡：
+# Model card for ljspeech (medium)
+
+* Language: en_US (English, United States)
+* Speakers: 1
+* Quality: medium
+* Samplerate: 22,050Hz
+
+## Dataset
+
+* URL: https://keithito.com/LJ-Speech-Dataset/
+* License: public domain
+
+## Training
+
+See: https://brycebeattie.com/files/tts/
+
+US English female voice. Single speaker. Trained from scratch for 1000 epochs on medium quality settings using the LJ Speech dataset. I reencoded the recordings to a bit rate of 22500 Hz so it would match other voices released for Piper TTS.
+
+数据集：https://keithito.com/LJ-Speech-Dataset/
+数据集声明为 public domain；录音来源 Linda Johnson / LibriVox，数据整理 Keith Ito。
+播放器使用应用自带音频，不依赖设备 speechSynthesis 英语音色。

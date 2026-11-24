@@ -1,0 +1,110 @@
+本版构建汇总：366 组词根/词缀家族，1864 词有来源关联，387 词有完整原创讲解。各批次核查记录的统计可能重叠，以本汇总为准。
+
+# 构词内容扩展与审核记录
+
+整理日期：2026-11-24。此日期表示本次检查时间，不表示来源词库、考试大纲或语料更新到了此日期。
+
+## 文件与集成
+
+- `root-expansion.json`：364 组来源列出的构词关联，含 229 组词根、79 组前缀、56 组后缀，精确关联当前词库 1,811 个词。`groups[].words` 是成员字符串数组；`mergeInto` 表示可合并到原有 40 组中的哪个 ID。没有 `mergeInto` 时保留稳定的 `id`。
+- `root-glossary.json`：327 条来源核心义的中文译释。译释是本次编写，英文原义保存在扩展数据中供核对。
+- `lessons-extra.json`：100 个新增词的原创讲解、例句、翻译和搭配，含逐词参考网址。以 `{lessons:[...]}` 读取；这些词原来没有完整讲解。不要覆盖原来的原创讲解。
+
+关联数据与原来 235 个讲解词合并后，可关联到 1,845 个词；四级全量参考为 1,267 / 5,355，六级全量参考为 1,793 / 7,110。**构词关联覆盖不等于完整讲解、例句覆盖。** 原有 235 个加本次 100 个，完整讲解合计 335 个，尚未由本次构建程序集成时不得在界面提前宣称生效。
+
+100 条新增讲解在四级全量参考中覆盖 84 词，六级全量参考中覆盖 100 词。`parts` 展示词根的历史关联和变体，**不能标为整词的完整拼写切分**；必须显示 `partsNote` 或以等效文案说明。讲解中特别区分了 tense 的形容词与语法名词来源、vertical 的中间词源，以及 conversation 的历史演变，避免机械直译。
+
+## 原始数据与许可
+
+源文件是项目已有的 `content/wordroot.txt`，结构与 ECDICT 上游同名文件对应；原始文件 SHA-256：
+
+`4b400dc5980e4a362fa12c7a49b326bb621c4e6bebd5f37146fbdcbe9db6bb6e`
+
+已打开核对的上游页面：
+
+- [ECDICT 主仓库](https://github.com/skywind3000/ECDICT)
+- [wordroot.txt](https://github.com/skywind3000/ECDICT/blob/master/wordroot.txt)
+- [MIT LICENSE](https://github.com/skywind3000/ECDICT/blob/master/LICENSE)
+
+仓库标示 MIT，当前 LICENSE 为 Copyright (c) 2025 Linwei，许可与版权文本已存在 `content/ECDICT-LICENSE.txt`。扩展构词关联沿用这一来源声明，发布时继续分发完整许可。上游 README 说明词典的释义、考试标签与语料词频字段；它并未承诺这份构词数据每条都经独立词源核验。
+
+## 生成与审核范围
+
+1. 只读取原始记录的 `example` 显式成员列表，并与当前词库精确匹配；不按包含某段字母来推断词根。
+2. 删除重复成员，不引入当前词库以外的词。少于两个剩余成员的来源组不纳入扩展。
+3. 词根、前缀和后缀单独标注。同后缀的词不能在界面声称是同词根词族。同形的不同义构词成分保留不同 ID。
+4. 一个词可有多个关联，但只能有一份学习进度。选择主词族时，优先原有明确教学词族，其次词根关联；词缀关联可作为补充。不要因共享 `-al` 一类通用后缀把大量词误作一个语义词族。
+5. 已发现的错误或教学歧义记录在 `exclusions`，附有逐条理由和参考链接；删除的十个关联包括 `attain → ten`、`errand → err`、`understand → under-` 等。其中一些是为避免教学误导而保守排除，并非断言其构词成分绝对没有历史联系。
+6. 100 条新增完整讲解的逐词 Etymonline 页面已实际打开核对。例句、翻译和搭配为本次原创教学内容，没有复制来源文章。
+7. 没有逐词独立审校全部 1,811 个关联，也没有审校全词库 7,162 个词的全部义项。因此 `evidence` 标成 `explicit-dictionary-membership`，`review` 标成 `source-listed-with-targeted-exclusions`，不能宣传成全库人工审定。
+
+## 质量边界
+
+词源关联可帮助理解，但不能可靠预测所有现代词义；学习页必须同时展示实际释义和语境。不要从核心义自动编造前后缀分段、词义演变故事或例句。只有构词关联、没有逐词讲解的词，应展示其实际内容层级；缺少例句时明确缺少，不用空模板冒充例句。
+
+词表与通用词频仍是现有 ECDICT 参考数据，本次扩展没有建立近年真题考频数据库，也没有把它变成官方四六级词书。
+
+
+# 原创词根讲解复核记录
+
+复核日期：2026-11-24。范围：`roots-a.json`、`roots-b.json` 的原有 40 组及本次新增讲解。
+
+## 本次改动
+
+- 新增 65 个原词库已经收录的单词的原创构词讲解、中文教学释义、英文例句、例句翻译及搭配。原有 235 个唯一讲解词增加到 300 个；记录数 301，因为 interact 同时出现在 act 与 inter 两组，构词上的多重关联是有意保留的。构建程序应对单词去重，同时允许多组关联。
+- audience：撤下 `aud + -ience（集合或状态）` 的易误导拆法，改为整词的历史同源说明。词源经 Latin audientia、audire；现代义包括听众、观众和读者。不能把任意 `-ience` 当作“集合”后缀套用。
+- finite：撤下把 `-ite` 当作可套用形容词构件的教学方式。词源经 Latin fīnītus、fīnīre、fīnis，改为明确的历史词形说明。
+- dictionary：改成 diction- 与 -ary 的历史联系，并说明来自词语汇集的历史用法，避免把 dict 与不明词尾机械拼接。
+- expect、suspect：保留整词解释历史同源关系，避免为了逐字母对应而创造 `pect` 词根等错误拆分。
+- spect 组显示相关变体 spic；原有整词说明增加 `partsNote`，明确它们不是逐字母的完整拆分。
+- photo、tele、auto 的组级参考链接改为直接解释该构词成分的资料，替代普通 photo 词条或泛化的前缀介绍页。
+- 所有本次新增讲解保留单词级 `source`；原有少数纠错词也补充了单词级资料链接。
+
+## 扩展词
+
+- spect：expect, suspect, suspicious, inspector, spectacular, spectacle。
+- struct：destruction, destructive, infrastructure, instructor, structural。
+- tract：attractive, attraction, extraction, abstract。
+- fer：reference, preference, difference, conference, different, indifferent, suffer。
+- pos：oppose, suppose, proposal, composition, disposal, exposure。
+- vert / vers：version, diverse, universe, university, conversation, anniversary, adverse, advertise, advertisement。
+- tend / tens：attention, intention, attendance, attendant, pretend, intense, intensive。
+- duc / duct：educate, education, introduction, production, reduction, conductor, induce。
+- mit / miss：admit, admission, permission, transmission, emission。
+- press：expression, impression, depression, compression。
+- scrib / script：script, prescription, subscription。
+- dict：dictation, contradiction。
+
+这些词的新增讲解是原创简短教学文案，英文例句不是从参考网站复制的。没有加入原词库之外的新词，因此不会为这些词引入缺失音频。
+
+## 查阅资料与证据
+
+以下资料在复核当日通过浏览工具读取。组级页面用于核查同源成员和词根义，不作为可直接复制的教学文案。派生名词/形容词在已经确认的词族关系上补充说明。
+
+- [American Heritage: audience](https://ahdictionary.com/word/search.html?q=audience)：audientia、audire 的词源及现代听众/观众/读者义。
+- [American Heritage: finite](https://ahdictionary.com/word/search.html?q=finite)：fīnītus、fīnīre、fīnis 的词源。
+- [Merriam-Webster: dictionary](https://www.merriam-webster.com/dictionary/dictionary)：dictiōn- 与 -ārius / -ārium 的历史构词。
+- [Membean: spect](https://membean.com/roots/spect-see)：spect 与 spic、expect/suspect/spectacle 等明确成员。
+- [Membean: struct](https://membean.com/roots/struct-built)：destruction、infrastructure、instructor、structural 等成员。
+- [Membean: tract](https://membean.com/roots/tract-drag)：attraction、attractive、abstract、extract 等词族联系。
+- [Membean: fer](https://membean.com/roots/fer-carry)：reference、preference、conference、different、suffer 等明确成员。
+- [Membean: pos](https://membean.com/roots/pos-put)：oppose、suppose、proposal、compose、disposal、exposure 等关系。
+- [Membean: vert](https://membean.com/roots/vert-turn) 与 [vers](https://membean.com/roots/vers-turned)：vert/vers 的关系及 diverse、version、anniversary 等成员。
+- [Merriam-Webster: universe](https://www.merriam-webster.com/dictionary/universe) 与 [university](https://www.merriam-webster.com/dictionary/university)：两者都与 universus 有关，但“大学”不可由“转动”机械推导。新增文案保留历史联系而不采用“所有学问转到一起”的故事。
+- [Merriam-Webster: advertise](https://www.merriam-webster.com/dictionary/advertise)：经法语的历史词形；现代意思不等于逐字母拆解。
+- [Membean: tend](https://membean.com/roots/tend-stretch)、[tens](https://membean.com/roots/tens-stretch)、[Merriam-Webster: attention](https://www.merriam-webster.com/dictionary/attention)：attend/attention 及 tend/tens 派生关系。
+- [Membean: duc](https://membean.com/roots/duc-lead) 与 [American Heritage: educate](https://www.ahdictionary.com/word/search.html?q=educate)：教育词族与 duc/deuk 的关系；文案未把现代 educate 当作直接的 e+duc+ate 拼义公式。
+- [Membean: mit](https://membean.com/roots/mit-send)：mit/miss 的关系，permission、emission 等明确示例。
+- [Membean: press](https://membean.com/roots/press-press)：compression、depression、impression 等明确成员。
+- [Membean: scrib](https://membean.com/roots/scrib-write)：script、prescription、subscription 等明确成员。
+- [Membean: dict](https://membean.com/roots/dict-say)：dict/dic 的词族关系。
+- [American Heritage: photo-](https://www.ahdictionary.com/word/search.html?q=photo-) 与 [tele-](https://www.ahdictionary.com/word/search.html?q=tele-)：直接构词成分资料。
+- [Membean: auto-](https://membean.com/roots/auto-self)：直接构词成分资料。
+
+## 核查边界
+
+本轮是针对易误导拆解、来源匹配以及高价值词族缺词的有界复核，不能称为整个词库、每个现代词义及每条发音已由词典编辑人工审校。没有逐条重新核查原有全部例句，也没有验证历年四、六级真题考频。
+
+词根和词源说明是理解线索，不是根据几个字母推算现代释义的通用规则；词形变化、借词和语义演变较复杂的项目保留整词说明。部分词也含多个构词成分，主分组不应抹去其他真实关联。
+
+`reviewed` 记录本次教学内容复核日期；资料页面的词典版本或语料不因此被声称更新到该日期。`partsNote` 为需要在学习界面展示的拆分说明，`source` 为单词级参考 URL。
